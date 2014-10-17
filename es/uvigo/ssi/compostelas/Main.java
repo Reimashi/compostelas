@@ -1,5 +1,9 @@
 package es.uvigo.ssi.compostelas;
 
+import java.security.Security;
+import java.util.Scanner;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
 /**
  * Clase principal y punto de entrada del programa
  */
@@ -19,6 +23,8 @@ public class Main {
      * @param args Argumentos de la ejecución
      */
     public static void main(String[] args) {
+        Security.addProvider(new BouncyCastleProvider());
+        
         if (args.length > 0) {
             switch (args[0]) {
                 case "genkey":
