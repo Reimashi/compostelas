@@ -5,6 +5,9 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Scanner;
 
+/**
+ * Representa la información de un peregrino
+ */
 public class Pilgrim implements Serializable {
     private String name;
     private NIF dni;
@@ -39,6 +42,10 @@ public class Pilgrim implements Serializable {
         return this.creationPlace;
     }
     
+    /**
+     * Crea un objeto peregrino recolectando la información por la linea de comandos
+     * @return 
+     */
     public static Pilgrim fromCMD() {
         Pilgrim pl = new Pilgrim();
         
