@@ -19,6 +19,11 @@ public class Main {
     private static final String APP_VERSION = "0.1";
     
     /**
+     * Página web de la aplicación
+     */
+    private static final String APP_WEB = "https://github.com/Reimashi/compostelas";
+    
+    /**
      * Punto de entrada del programa
      * @param args Argumentos de la ejecución
      */
@@ -74,7 +79,7 @@ public class Main {
     /**
      * Crea un archivo de formato .userkeys con información y claves RSA del usuario.
      * @param filepath Ruta del archivo de formato .userkeys
-     * @param user Tipo de usuario. (hostel, office)
+     * @param user Tipo de usuario. (hostel, office, pilgrim)
      */
     private static void cmdGenkey (String user, String type) {
         throw new UnsupportedOperationException();
@@ -111,7 +116,7 @@ public class Main {
      * Muestra la ayuda del programa
      */
     private static void cmdHelp()  {
-	System.out.println(Main.APP_NAME + " (" + Main.APP_VERSION + ")");
+	System.out.println(Main.APP_NAME + " (" + Main.APP_VERSION + ") <" + Main.APP_WEB + ">");
 	System.out.println();
 	System.out.println("Usage mode:");
 	System.out.println();
@@ -119,7 +124,7 @@ public class Main {
 	System.out.println();
 	System.out.println("Commands:");
 	System.out.println();
-	System.out.println("genkey <name> <type>\tGenerate a sealant file for an user with <name> and\n\t\t\tof <type>. <type> values: \"hostel\", \"office\"");
+	System.out.println("genkey <name> <type>\tGenerate a sealant file for an user with <name> and\n\t\t\tof <type>. <type> values: \"hostel\", \"office\", \"pilgrim\"");
 	System.out.println();
 	System.out.println("new <file> <user>\tGenerate a compostela <file> signated by the <user>\n\t\t\t(Only \"office\"-type users)");
 	System.out.println();
