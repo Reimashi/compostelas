@@ -1,7 +1,11 @@
 package es.uvigo.ssi.compostelas;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.security.Security;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 /**
@@ -33,8 +37,8 @@ public class Main {
         if (args.length > 0) {
             switch (args[0]) {
                 case "genkey":
-                    if (args.length < 3) Main.cmdMsgInsuficientArguments();
-                    else Main.cmdGenkey(args[1], args[2]);
+                    if (args.length < 2) Main.cmdMsgInsuficientArguments();
+                    else Main.cmdGenkey(args[1]);
                     break;
                 case "new":
                     if (args.length < 3) Main.cmdMsgInsuficientArguments();
@@ -81,8 +85,16 @@ public class Main {
      * @param filepath Ruta del archivo de formato .userkeys
      * @param user Tipo de usuario. (hostel, office, pilgrim)
      */
-    private static void cmdGenkey (String user, String type) {
-        throw new UnsupportedOperationException();
+    private static void cmdGenkey (String user) {
+        Signer s = Signer.createSigner(user);
+        
+        try {
+            s.SaveFile();
+            System.out.println("Sign files created succesfully!");
+        }
+        catch (IOException e) {
+            System.out.println("An error has ocurred while " + Main.APP_NAME + " try save the sign files.");
+        }
     }
     
     /**
@@ -124,11 +136,11 @@ public class Main {
 	System.out.println();
 	System.out.println("Commands:");
 	System.out.println();
-	System.out.println("genkey <name> <type>\tGenerate a sealant file for an user with <name> and\n\t\t\tof <type>. <type> values: \"hostel\", \"office\", \"pilgrim\"");
+	System.out.println("genkey <name>\t\tGenerate a sealant file for an user with <name>.");
 	System.out.println();
-	System.out.println("new <file> <user>\tGenerate a compostela <file> signated by the <user>\n\t\t\t(Only \"office\"-type users)");
+	System.out.println("new <file> <user>\tGenerate a compostela <file> signated by the <user>.");
 	System.out.println();
-	System.out.println("stamp <file> <user>\tStamp a compostela <file> with the sign of the <user>\n\t\t\t(Only \"hostel\"-type users)");
+	System.out.println("stamp <file> <user>\tStamp a compostela <file> with the sign of the <user>.");
 	System.out.println();
 	System.out.println("check <file>\t\tChech the sign's and show information about the pilgrim");
 	System.out.println();
