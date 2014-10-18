@@ -1,11 +1,7 @@
 package es.uvigo.ssi.compostelas;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.Security;
-import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 /**
