@@ -1,5 +1,7 @@
 package es.uvigo.ssi.compostelas;
 
+import es.uvigo.ssi.compostelas.exceptions.DecodeException;
+import es.uvigo.ssi.compostelas.exceptions.EncodeException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -9,6 +11,7 @@ import java.security.Security;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.json.simple.parser.ParseException;
 
 /**
  * Clase principal y punto de entrada del programa
@@ -45,8 +48,8 @@ public class Main {
                     else Main.cmdGenkey(args[1]);
                     break;
                 case "new":
-                    if (args.length < 3) Main.cmdMsgInsuficientArguments();
-                    else Main.cmdNew(args[1], args[2]);
+                    if (args.length < 4) Main.cmdMsgInsuficientArguments();
+                    else Main.cmdNew(args[1], args[2], args[3]);
                     break;
                 case "stamp":
                     if (args.length < 3) Main.cmdMsgInsuficientArguments();
@@ -106,18 +109,22 @@ public class Main {
      * @param filepath Ruta del archivo de formato .compostela a guardar.
      * @param user Ruta del archivo de claves del usuario que va a firmar.
      */
-    private static void cmdNew (String filepath, String user) {
+    private static void cmdNew (String filepath, String user, String piluser) {
         
         try {
             Signer usign = Signer.loadFromFile(user);
+            Signer pilusign = Signer.loadFromFile(piluser);
             Pilgrim pil = Pilgrim.fromCMD();
-            Compostela comp = new Compostela(pil, usign);
+            Compostela comp = new Compostela(pil, usign, pilusign);
             comp.SaveFile(filepath);
         } catch (FileNotFoundException ex) {
             System.out.println("<ERROR> The user key file can't be opened.");
             Main._log.log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             System.out.println("<ERROR> Output file can't be written. Check directory permissions.");
+            Main._log.log(Level.SEVERE, null, ex);
+        } catch (DecodeException | EncodeException ex) {
+            System.out.println("<ERROR> Compostela can't be encrypted or signed.");
             Main._log.log(Level.SEVERE, null, ex);
         }
     }
@@ -130,11 +137,17 @@ public class Main {
     private static void cmdStamp (String filepath, String user) {
         try {
             Compostela comp = Compostela.loadFromFile(filepath);
-            Signer sign = Signer.loadFromFile(user);
-            comp.AddStamp(new Stamp(sign, comp.getPilgrim()));
+            Signer signer = Signer.loadFromFile(user);
+            comp.AddStamp(signer);
             comp.SaveFile(filepath);
         } catch (IOException ex) {
             System.out.println("<ERROR> The user key file can't be opened.");
+            Main._log.log(Level.SEVERE, null, ex);
+        } catch (ParseException ex) {
+            System.out.println("<ERROR> JSON Parser can't understand the compostela file.");
+            Main._log.log(Level.SEVERE, null, ex);
+        } catch (DecodeException|EncodeException ex) {
+            System.out.println("<ERROR> The program can't sign the compostela.");
             Main._log.log(Level.SEVERE, null, ex);
         }
     }
@@ -150,7 +163,12 @@ public class Main {
             Compostela comp = Compostela.loadFromFile(filepath);
             if (comp.CheckStamps()) {
                 System.out.println("Signs are correct. File integrity is OK!");
-                System.out.println(comp.getPilgrim().toString());
+                try {
+                    System.out.println(comp.getPilgrim().toString());
+                } catch (DecodeException ex) {
+                    System.out.println("Pilgrim info can't be decoded.");
+                    Main._log.log(Level.SEVERE, null, ex);
+                }
             }
             else {
                 System.out.println("Some sign appears to be incorrect. File integrity is BAD!");
@@ -158,6 +176,9 @@ public class Main {
         } catch (IOException ex) {
             System.out.println("Compostela file can't be opened.");
             Main._log.log(Level.SEVERE, null, ex);
+        } catch (ParseException ex) {
+            System.out.println("<ERROR> JSON Parser can't understand the compostela file.");
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -175,7 +196,7 @@ public class Main {
 	System.out.println();
 	System.out.println("genkey <name>\t\tGenerate a sealant file for an user with <name>.");
 	System.out.println();
-	System.out.println("new <file> <user>\tGenerate a compostela <file> signated by the <user>.");
+	System.out.println("new <file> <office> <pilgrim>\tGenerate a compostela <file> signated by the <office> and <pilgrim>.");
 	System.out.println();
 	System.out.println("stamp <file> <user>\tStamp a compostela <file> with the sign of the <user>.");
 	System.out.println();
