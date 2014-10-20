@@ -84,11 +84,19 @@ public class Pilgrim implements Serializable {
     }
     
     /**
-     * Convierte a cadena de caracteres la información de un peregrino
-     * @return 
+     * Convierte a cadena de caracteres la información de un peregrino.
+     * @return Cadena de caracteres con la información del peregrino.
      */
     @Override
     public String toString() {
-        throw new UnsupportedOperationException();
+        return "=== Pilgrim Information ===" + System.lineSeparator() +
+                "Name: " + this.getName() + System.lineSeparator() +
+                "NIF: " + this.getNIF().toString() + System.lineSeparator() +
+                "Address: " + this.getAddress() + System.lineSeparator() +
+                "Motivations: " + this.getMotivations() + System.lineSeparator() +
+                "==========================" +
+                "Certification office: " + this.getCreationPlace() + System.lineSeparator() +
+                "Creation time: " + this.getCreationTime().toString() + System.lineSeparator() +
+                "==========================";
     }
 }
