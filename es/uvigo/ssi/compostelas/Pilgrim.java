@@ -113,14 +113,18 @@ public class Pilgrim implements Serializable {
      */
     @Override
     public String toString() {
-        return "=== Pilgrim Information ===" + System.lineSeparator() +
-                "Name: " + this.getName() + System.lineSeparator() +
-                "NIF: " + this.getNIF().toString() + System.lineSeparator() +
-                "Address: " + this.getAddress() + System.lineSeparator() +
-                "Motivations: " + this.getMotivations() + System.lineSeparator() +
-                "==========================" +
-                "Certification office: " + this.getCreationPlace() + System.lineSeparator() +
-                "Creation time: " + this.getCreationTime().toString() + System.lineSeparator() +
-                "==========================";
+        StringBuilder lines = new StringBuilder();
+        
+        lines.append("=== Pilgrim Information ===").append(System.lineSeparator());
+        lines.append("Name: ").append(this.getName()).append(System.lineSeparator());
+        lines.append("NIF: ").append(this.getNIF().toString()).append(System.lineSeparator());
+        lines.append("Address: ").append(this.getAddress()).append(System.lineSeparator());
+        lines.append("Motivations: ").append(this.getMotivations()).append(System.lineSeparator());
+        lines.append("==========================");
+        lines.append("Certification office: ").append(this.getCreationPlace()).append(System.lineSeparator());
+        lines.append("Creation time: ").append(this.getCreationTime().toString()).append(System.lineSeparator());
+        lines.append("==========================");
+        
+        return lines.toString();
     }
 }
