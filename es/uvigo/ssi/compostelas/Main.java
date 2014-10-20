@@ -1,7 +1,13 @@
 package es.uvigo.ssi.compostelas;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.Security;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 /**
@@ -22,6 +28,8 @@ public class Main {
      * Página web de la aplicación
      */
     private static final String APP_WEB = "https://github.com/Reimashi/compostelas";
+    
+    private static final Logger _log = Logger.getLogger(Main.class.getName());
     
     /**
      * Punto de entrada del programa
@@ -99,7 +107,19 @@ public class Main {
      * @param user Ruta del archivo de claves del usuario que va a firmar.
      */
     private static void cmdNew (String filepath, String user) {
-        throw new UnsupportedOperationException();
+        
+        try {
+            Signer usign = Signer.loadFromFile(user);
+            Pilgrim pil = Pilgrim.fromCMD();
+            Compostela comp = new Compostela(pil, usign);
+            comp.SaveFile(filepath);
+        } catch (FileNotFoundException ex) {
+            System.out.println("<ERROR> The user key file can't be opened.");
+            Main._log.log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            System.out.println("<ERROR> Output file can't be written. Check directory permissions.");
+            Main._log.log(Level.SEVERE, null, ex);
+        }
     }
     
     /**

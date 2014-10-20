@@ -15,13 +15,22 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Compostela implements Serializable {
-    private Pilgrim pilgrim;
-    private List<Stamp> stamps = new ArrayList<>();
+    private transient Signer signerPilgrim;
+    private final Pilgrim pilgrim;
+    private final List<Stamp> stamps = new ArrayList<>();
     
-    private Compostela() {}
+    private Compostela() {
+        this.pilgrim = null;
+    }
     
-    public Compostela (Pilgrim p) {
+    /**
+     * Crea un objeto Compostela
+     * @param p Información del peregrino
+     * @param s Usuario que firma y encripta peregrino
+     */
+    public Compostela (Pilgrim p, Signer s) {
         this.pilgrim = p;
+        this.signerPilgrim = s;
     }
     
     public void AddStamp (Stamp s) {
