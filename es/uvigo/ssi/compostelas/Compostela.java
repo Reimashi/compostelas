@@ -1,5 +1,7 @@
 package es.uvigo.ssi.compostelas;
 
+import es.uvigo.ssi.compostelas.exceptions.DecodeException;
+import es.uvigo.ssi.compostelas.exceptions.EncodeException;
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.BufferedInputStream;
@@ -7,46 +9,63 @@ import java.io.BufferedOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public class Compostela implements Serializable {
-    private transient Signer signerPilgrim;
-    private final Pilgrim pilgrim;
-    private final List<Stamp> stamps = new ArrayList<>();
+    private PilgrimEncoded pilgrimEncoded;
+    private final List<Stamp> stamps;
     
     private Compostela() {
-        this.pilgrim = null;
+        this.stamps = new ArrayList<>();
     }
     
     /**
      * Crea un objeto Compostela
      * @param p Información del peregrino
-     * @param s Usuario que firma y encripta peregrino
+     * @param office Claves de la oficinal del peregrino
+     * @param pilgrim Claves del peregrino
+     * @throws es.uvigo.ssi.compostelas.exceptions.DecodeException
+     * @throws es.uvigo.ssi.compostelas.exceptions.EncodeException
      */
-    public Compostela (Pilgrim p, Signer s) {
-        this.pilgrim = p;
-        this.signerPilgrim = s;
+    public Compostela (Pilgrim p, Signer office, Signer pilgrim) throws DecodeException, EncodeException {
+        this.pilgrimEncoded = new PilgrimEncoded(p, office, pilgrim);
+        this.stamps = new ArrayList<>();
     }
     
     /**
      * Añade un sello (firma digital) de un albergue.
      * @param s 
+     * @throws es.uvigo.ssi.compostelas.exceptions.DecodeException 
+     * @throws es.uvigo.ssi.compostelas.exceptions.EncodeException 
      */
-    public void AddStamp (Stamp s) {
-        this.stamps.add(s);
+    public void AddStamp (Signer s) throws DecodeException, EncodeException {
+        this.stamps.add(new Stamp(s, this.pilgrimEncoded));
     }
     
     /**
      * Obtiene el objeto de tipo peregrino
      * @return 
+     * @throws es.uvigo.ssi.compostelas.exceptions.DecodeException 
      */
-    public Pilgrim getPilgrim() {
-        return this.pilgrim;
+    public Pilgrim getPilgrim() throws DecodeException {
+        try {
+            Signer s = Signer.loadFromFile(this.pilgrimEncoded.getSignerName());
+            return this.pilgrimEncoded.decrypt(s);
+        } catch (FileNotFoundException ex) {
+            throw new DecodeException ("Pilgrim can't be decoded. " + ex.getMessage());
+        }
     }
     
     /**
@@ -71,16 +90,23 @@ public class Compostela implements Serializable {
      * @throws FileNotFoundException
      * @throws IOException 
      */
-    public void SaveFile (String path) throws FileNotFoundException, IOException {
-        try (FileOutputStream fos = new FileOutputStream(path);
-                BufferedOutputStream bos = new BufferedOutputStream(fos);
-                XMLEncoder encoder = new XMLEncoder(bos)) {
-            encoder.writeObject(this);
-        } 
-        catch (FileNotFoundException ex) {
-            Logger.getLogger(Compostela.class.getName()).log(Level.SEVERE, null, ex);
-            throw ex;
-        } 
+    public void SaveFile (String path) throws IOException {
+        JSONObject jsonObj = new JSONObject();
+        
+        jsonObj.put("pilgrim", this.pilgrimEncoded.toJSON());
+        
+        JSONArray jsonStamps = new JSONArray();
+        
+        for (Iterator<Stamp> it = this.stamps.iterator(); it.hasNext();) {
+            jsonStamps.add(it.next().toJSON());
+        }
+        
+        jsonObj.put("stamps", jsonStamps);
+        
+        try (FileWriter file = new FileWriter(path)) {
+            file.write(jsonObj.toJSONString());
+            file.flush();
+        }
         catch (IOException ex) {
             Logger.getLogger(Compostela.class.getName()).log(Level.SEVERE, null, ex);
             throw ex;
@@ -93,20 +119,29 @@ public class Compostela implements Serializable {
      * @return Objeto compostela
      * @throws FileNotFoundException
      * @throws IOException 
+     * @throws org.json.simple.parser.ParseException 
      */
-    public static Compostela loadFromFile (String path) throws FileNotFoundException, IOException {
-        Compostela toret = null;
+    public static Compostela loadFromFile (String path) throws IOException, ParseException {
+        Compostela toret = new Compostela();
         
-        try (FileInputStream fis = new FileInputStream(path);
-                BufferedInputStream bis = new BufferedInputStream(fis);
-                XMLDecoder decoder = new XMLDecoder(bis)) {
-            toret = (Compostela) decoder.readObject();
+        try (FileReader reader = new FileReader(path)) {
+            JSONParser parser = new JSONParser();
+            JSONObject jsonRoot = (JSONObject) parser.parse(reader);
+            
+            toret.pilgrimEncoded = PilgrimEncoded.fromJSON((JSONObject) jsonRoot.get("pilgrim"));
+            
+            JSONArray stamps = (JSONArray) jsonRoot.get("stamps");
+
+            Iterator i = stamps.iterator();
+            while (i.hasNext()) {
+                toret.stamps.add(Stamp.fromJSON((JSONObject) i.next()));
+            }
         } 
         catch (FileNotFoundException ex) {
             Logger.getLogger(Compostela.class.getName()).log(Level.SEVERE, null, ex);
             throw ex;
         } 
-        catch (IOException ex) {
+        catch (IOException | ParseException ex) {
             Logger.getLogger(Compostela.class.getName()).log(Level.SEVERE, null, ex);
             throw ex;
         }
