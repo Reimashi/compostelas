@@ -1,10 +1,8 @@
 package es.uvigo.ssi.compostelas;
 
-import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -32,7 +30,7 @@ public class Signer {
     private static final String PUBLIC_KEY_EXTENSION = ".public";
     private static final String PRIVATE_KEY_EXTENSION = ".pem";
     
-    private String name;
+    private final String name;
     
     private PublicKey publicSign;
     private PrivateKey privateSign;
