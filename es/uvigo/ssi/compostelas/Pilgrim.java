@@ -82,4 +82,13 @@ public class Pilgrim implements Serializable {
         
         return pl;
     }
+    
+    /**
+     * Convierte a cadena de caracteres la información de un peregrino
+     * @return 
+     */
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException();
+    }
 }
