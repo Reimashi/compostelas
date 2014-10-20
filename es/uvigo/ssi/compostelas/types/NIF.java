@@ -3,21 +3,19 @@ package es.uvigo.ssi.compostelas.types;
 import java.io.Serializable;
 
 /**
- * Clase que representa un numero de identificación fiscal (NIF) Español.
+ * Clase que representa un número de identificación fiscal (NIF) Español.
  */
 public class NIF implements Serializable {
     private static final long serialVersionUID = 8799656478674716638L;
     
-    public static final String NIF_LETTERS = "TRWAGMYFPDXBNJZSQVHLCKE";
+    private static final String NIF_LETTERS = "TRWAGMYFPDXBNJZSQVHLCKE";
     
-    private int number;
-    private int letter;
-    
-    private NIF() {}
+    private final int number;
+    private final char letter;
     
     /**
-     * Crea un objeto NIF a partir de su numero de documento.
-     * @param number Numero de documento
+     * Crea un objeto NIF a partir de su número de documento.
+     * @param number Número de documento.
      */
     public NIF (int number) {
         if (number >= 10000000 && number <= 99999999) {
@@ -30,8 +28,24 @@ public class NIF implements Serializable {
     }
     
     /**
+     * Obtiene el número del documento NIF.
+     * @return Número del documento.
+     */
+    public int getNumber() {
+        return this.number;
+    }
+    
+    /**
+     * Obtiene la letra del documento NIF.
+     * @return Carácter de verificación del documento.
+     */
+    public char getLetter() {
+        return this.letter;
+    }
+    
+    /**
      * Calcula la letra de verificación de un NIF.
-     * @param number Numero de documento
+     * @param number Número de documento
      * @return Letra de verificación
      */
     public static char calculateLetter(int number) {
