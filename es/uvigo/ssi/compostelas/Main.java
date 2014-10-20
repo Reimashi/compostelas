@@ -128,7 +128,15 @@ public class Main {
      * @param user Ruta del archivo de claves del usuario que va a firmar.
      */
     private static void cmdStamp (String filepath, String user) {
-        throw new UnsupportedOperationException();
+        try {
+            Compostela comp = Compostela.loadFromFile(filepath);
+            Signer sign = Signer.loadFromFile(user);
+            comp.AddStamp(new Stamp(sign, comp.getPilgrim()));
+            comp.SaveFile(filepath);
+        } catch (IOException ex) {
+            System.out.println("<ERROR> The user key file can't be opened.");
+            Main._log.log(Level.SEVERE, null, ex);
+        }
     }
     
     /**
@@ -137,7 +145,20 @@ public class Main {
      * @param filepath Ruta del archivo de formato .compostela
      */
     private static void cmdCheck (String filepath) {
-        throw new UnsupportedOperationException();
+        
+        try {
+            Compostela comp = Compostela.loadFromFile(filepath);
+            if (comp.CheckStamps()) {
+                System.out.println("Signs are correct. File integrity is OK!");
+                System.out.println(comp.getPilgrim().toString());
+            }
+            else {
+                System.out.println("Some sign appears to be incorrect. File integrity is BAD!");
+            }
+        } catch (IOException ex) {
+            System.out.println("Compostela file can't be opened.");
+            Main._log.log(Level.SEVERE, null, ex);
+        }
     }
     
     /**
