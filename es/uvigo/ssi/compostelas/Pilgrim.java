@@ -1,14 +1,15 @@
 package es.uvigo.ssi.compostelas;
 
 import es.uvigo.ssi.compostelas.types.NIF;
-import java.io.Serializable;
+import java.util.Base64;
 import java.util.Date;
 import java.util.Scanner;
+import org.json.simple.JSONObject;
 
 /**
  * Representa la información de un peregrino
  */
-public class Pilgrim implements Serializable {
+public class Pilgrim {
     private String name;
     private NIF dni;
     private String address;
@@ -105,6 +106,19 @@ public class Pilgrim implements Serializable {
         pl.creationTime = System.currentTimeMillis();
         
         return pl;
+    }
+    
+    public JSONObject toJSON() {
+        JSONObject jsonObj = new JSONObject();
+        
+        jsonObj.put("name", this.name);
+        jsonObj.put("nif", this.dni);
+        jsonObj.put("address", this.address);
+        jsonObj.put("motivations", this.motivations);
+        jsonObj.put("creationtime", this.creationTime);
+        jsonObj.put("creationplace", this.creationPlace);
+        
+        return jsonObj;
     }
     
     /**
