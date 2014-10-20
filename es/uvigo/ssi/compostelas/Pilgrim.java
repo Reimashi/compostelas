@@ -18,33 +18,57 @@ public class Pilgrim implements Serializable {
     
     private Pilgrim() {}
     
+    /**
+     * Obtiene el nombre del peregrino.
+     * @return 
+     */
     public String getName() {
         return this.name;
     }
     
-    public NIF getDNI() {
+    /**
+     * Obtiene el documento NIF del peregrino.
+     * @return 
+     */
+    public NIF getNIF() {
         return this.dni;
     }
     
+    /**
+     * Obtiene la dirección del peregrino.
+     * @return 
+     */
     public String getAddress() {
         return this.address;
     }
     
+    /**
+     * Obtiene las motivaciones del peregrino para emprender el viaje.
+     * @return 
+     */
     public String getMotivations() {
         return this.motivations;
     }
     
+    /**
+     * Obtiene la fecha en la que se creó el peregrino.
+     * @return 
+     */
     public Date getCreationTime() {
         return new Date(this.creationTime);
     }
     
+    /**
+     * Obtiene el nombre de la entidad que creó el peregrino.
+     * @return 
+     */
     public String getCreationPlace() {
         return this.creationPlace;
     }
     
     /**
-     * Crea un objeto peregrino recolectando la información por la linea de comandos
-     * @return 
+     * Crea un objeto peregrino recolectando la información por la linea de comandos.
+     * @return Objeto peregrino creado.
      */
     public static Pilgrim fromCMD() {
         Pilgrim pl = new Pilgrim();
