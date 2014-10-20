@@ -33,18 +33,44 @@ public class Compostela implements Serializable {
         this.signerPilgrim = s;
     }
     
+    /**
+     * Añade un sello (firma digital) de un albergue.
+     * @param s 
+     */
     public void AddStamp (Stamp s) {
         this.stamps.add(s);
     }
     
+    /**
+     * Obtiene el objeto de tipo peregrino
+     * @return 
+     */
     public Pilgrim getPilgrim() {
         return this.pilgrim;
     }
     
+    /**
+     * Obtiene una lista de sellos (firma digital) de albergues.
+     * @return 
+     */
     public List<Stamp> getStamps() {
         return this.stamps;
     }
     
+    /**
+     * Comprueba que todas las firmas digitales, incluida la de peregrino, son correctas.
+     * @return TRUE si correctas. FALSE si algún error.
+     */
+    public boolean CheckStamps() {
+        throw new UnsupportedOperationException();
+    }
+    
+    /**
+     * Guarda un archivo de tipo .compostela
+     * @param path Ruta del fichero de salida, incluido el nombre del archivo.
+     * @throws FileNotFoundException
+     * @throws IOException 
+     */
     public void SaveFile (String path) throws FileNotFoundException, IOException {
         try (FileOutputStream fos = new FileOutputStream(path);
                 BufferedOutputStream bos = new BufferedOutputStream(fos);
@@ -61,6 +87,13 @@ public class Compostela implements Serializable {
         }
     }
     
+    /**
+     * Carga un archivo .compostela en un objeto de tipo Compostela
+     * @param path Ruta del archivo de origen
+     * @return Objeto compostela
+     * @throws FileNotFoundException
+     * @throws IOException 
+     */
     public static Compostela loadFromFile (String path) throws FileNotFoundException, IOException {
         Compostela toret = null;
         
