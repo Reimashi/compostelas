@@ -1,6 +1,7 @@
 package es.uvigo.ssi.compostelas.types;
 
 import java.io.Serializable;
+import java.text.ParseException;
 
 /**
  * Clase que representa un número de identificación fiscal (NIF) Español.
@@ -54,6 +55,28 @@ public class NIF implements Serializable {
         }
         else {
             throw new NumberFormatException("A NIF number must have 8 digits");
+        }
+    }
+    
+    /**
+     * Obtiene un objeto NIF a partir de su representación textual.
+     * FIXME: Comprobar las letras en las representaciones complejas.
+     * @param str Cadena de caracteres con la representación textual.
+     * @return Objeto NIF creado.
+     * @throws java.text.ParseException 
+     */
+    public static NIF getNIF(String str) throws ParseException {
+        if (str.length() == 8) {
+            return new NIF(Integer.getInteger(str));
+        }
+        else if (str.length() == 9) {
+            return new NIF(Integer.getInteger(str.substring(0,8)));
+        }
+        else if (str.length() == 10) {
+            return new NIF(Integer.getInteger(str.substring(0,8)));
+        }
+        else {
+            throw new ParseException("getNIF can't parse the textual representation of NIF", 0);
         }
     }
     
