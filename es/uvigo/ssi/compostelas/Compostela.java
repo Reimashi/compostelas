@@ -58,21 +58,26 @@ public class Compostela {
     
     /**
      * Obtiene el objeto de tipo peregrino
-     * @return 
+     * @return Objeto de tipo peregrino.
      * @throws es.uvigo.ssi.compostelas.exceptions.DecodeException 
      */
     public Pilgrim getPilgrim() throws DecodeException {
-        try {
-            Signer s = Signer.loadFromFile(this.pilgrimEncoded.getSignerName());
-            return this.pilgrimEncoded.decrypt(s);
-        } catch (FileNotFoundException ex) {
-            throw new DecodeException ("Pilgrim can't be decoded. " + ex.getMessage());
+        if (this.pilgrimDecoded == null) {
+            try {
+                Signer soff = Signer.loadFromFile(this.pilgrimEncoded.getSignerName());
+                Signer spil = Signer.loadFromFile(this.pilgrimEncoded.getPilgrimSignerName());
+                this.pilgrimDecoded = this.pilgrimEncoded.decrypt(soff, spil);
+            } catch (FileNotFoundException ex) {
+                throw new DecodeException ("Pilgrim can't be decoded. " + ex.getMessage());
+            }
         }
+        
+        return this.pilgrimDecoded;
     }
     
     /**
      * Obtiene una lista de sellos (firma digital) de albergues.
-     * @return 
+     * @return Lista de sellos digitales.
      */
     public List<Stamp> getStamps() {
         return this.stamps;
@@ -80,10 +85,25 @@ public class Compostela {
     
     /**
      * Comprueba que todas las firmas digitales, incluida la de peregrino, son correctas.
-     * @return TRUE si correctas. FALSE si algún error.
+     * @return true si correctas; false si algún error.
+     * @throws es.uvigo.ssi.compostelas.exceptions.EncodeException
      */
-    public boolean CheckStamps() {
-        throw new UnsupportedOperationException();
+    public boolean check() throws EncodeException {
+        try {
+            this.getPilgrim();
+            
+            for (Stamp s: this.stamps) {
+                if (!s.checkStamp(this.pilgrimEncoded)) {
+                    return false;
+                }
+            }
+            
+            return true;
+        } catch (DecodeException ex) {
+            Compostela._log.log(Level.SEVERE, null, ex);
+        }
+        
+        return false;
     }
     
     /**
