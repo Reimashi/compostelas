@@ -102,9 +102,9 @@ public class PilgrimEncoded {
         JSONObject jsonObj = new JSONObject();
         
         jsonObj.put("signer", this.signerName);
-        jsonObj.put("data", Base64.getEncoder().encode(this.pilgrimdata));
-        jsonObj.put("encryptkey", Base64.getEncoder().encode(this.encryptkey));
-        jsonObj.put("sign", Base64.getEncoder().encode(this.sign));
+        jsonObj.put("data", Base64.getEncoder().encodeToString(this.pilgrimdata));
+        jsonObj.put("encryptkey", Base64.getEncoder().encodeToString(this.encryptkey));
+        jsonObj.put("sign", Base64.getEncoder().encodeToString(this.sign));
         
         return jsonObj;
     }
