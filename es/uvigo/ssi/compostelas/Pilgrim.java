@@ -1,7 +1,6 @@
 package es.uvigo.ssi.compostelas;
 
 import es.uvigo.ssi.compostelas.types.NIF;
-import java.util.Base64;
 import java.util.Date;
 import java.util.Scanner;
 import org.json.simple.JSONObject;
