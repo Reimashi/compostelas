@@ -97,7 +97,8 @@ public class Main {
             System.out.println("Sign files created succesfully!");
         }
         catch (IOException e) {
-            System.out.println("An error has ocurred while " + Main.APP_NAME + " try save the sign files.");
+            System.out.println("<ERROR> An error has ocurred while " + Main.APP_NAME + " try save the sign files.");
+            Main._log.log(Level.SEVERE, null, e);
         }
     }
     
@@ -114,6 +115,7 @@ public class Main {
             Pilgrim pil = Pilgrim.fromCMD();
             Compostela comp = new Compostela(pil, usign, pilusign);
             comp.SaveFile(filepath);
+            System.out.println("Compostela file created succesfully!");
         } catch (FileNotFoundException ex) {
             System.out.println("<ERROR> The user key file can't be opened.");
             Main._log.log(Level.SEVERE, null, ex);
@@ -137,6 +139,7 @@ public class Main {
             Signer signer = Signer.loadFromFile(user);
             comp.AddStamp(signer);
             comp.SaveFile(filepath);
+            System.out.println("Compostela file has been signed correctly!");
         } catch (IOException ex) {
             System.out.println("<ERROR> The user key file can't be opened.");
             Main._log.log(Level.SEVERE, null, ex);
@@ -158,24 +161,27 @@ public class Main {
         
         try {
             Compostela comp = Compostela.loadFromFile(filepath);
-            if (comp.CheckStamps()) {
+            if (comp.check()) {
                 System.out.println("Signs are correct. File integrity is OK!");
                 try {
                     System.out.println(comp.getPilgrim().toString());
                 } catch (DecodeException ex) {
-                    System.out.println("Pilgrim info can't be decoded.");
+                    System.out.println("<ERROR> Pilgrim info can't be decoded.");
                     Main._log.log(Level.SEVERE, null, ex);
                 }
             }
             else {
-                System.out.println("Some sign appears to be incorrect. File integrity is BAD!");
+                System.out.println("<ERROR> Some sign appears to be incorrect. File integrity is BAD!");
             }
         } catch (IOException ex) {
-            System.out.println("Compostela file can't be opened.");
+            System.out.println("<ERROR> Compostela file can't be opened.");
             Main._log.log(Level.SEVERE, null, ex);
         } catch (ParseException ex) {
             System.out.println("<ERROR> JSON Parser can't understand the compostela file.");
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            Main._log.log(Level.SEVERE, null, ex);
+        } catch (EncodeException ex) {
+            System.out.println("<ERROR> Compostela data can't be decoded.");
+            Main._log.log(Level.SEVERE, null, ex);
         }
     }
     

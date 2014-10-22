@@ -24,10 +24,12 @@ import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 import org.bouncycastle.openssl.jcajce.JcePEMDecryptorProviderBuilder;
 
+/**
+ * Representa un par de claves publica/privada e información sobre su dueño.
+ */
 public class Signer {
     private static final Logger _log = Logger.getLogger(Signer.class.getName());
     
-    private static final String PUBLIC_KEY_EXTENSION = ".public";
     private static final String PRIVATE_KEY_EXTENSION = ".pem";
     
     private final String name;
@@ -39,14 +41,26 @@ public class Signer {
         this.name = name;
     }
     
+    /**
+     * Obtiene el nombre del dueño de las claves.
+     * @return Nombre del dueño de las claves.
+     */
     public String getName() {
         return this.name;
     }
     
+    /**
+     * Obtiene el par de claves.
+     * @return Par de claves publica/privada.
+     */
     public KeyPair getKey() {
         return new KeyPair(this.publicSign, this.privateSign);
     }
     
+    /**
+     * Guarda las claves en un archivo de formato PEM (Con nombre igual al dueño)
+     * @throws IOException 
+     */
     public void SaveFile() throws IOException {
         
         FileWriter fw = new FileWriter(this.name + Signer.PRIVATE_KEY_EXTENSION);
@@ -61,6 +75,12 @@ public class Signer {
         }
     }
     
+    /**
+     * Carga las claves en un archivo de formato PEM (Con nombre igual al dueño)
+     * @param path Nombre del dueño / Ruta del archivo ("Dueño.pem")
+     * @return Objeto Signer correspondiente.
+     * @throws FileNotFoundException 
+     */
     public static Signer loadFromFile(String path) throws FileNotFoundException {
         String privKeyFilename = path + Signer.PRIVATE_KEY_EXTENSION;
         File privKeyFile = new File(privKeyFilename);
@@ -103,6 +123,11 @@ public class Signer {
         }
     }
     
+    /**
+     * Genera un nuevo objeto Signer.
+     * @param user Nombre del dueño.
+     * @return Nuevo objeto Signer generado.
+     */
     public static Signer createSigner(String user) {
         Signer storet = new Signer(user);
         

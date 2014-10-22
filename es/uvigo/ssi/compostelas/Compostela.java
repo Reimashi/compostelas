@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -17,9 +16,18 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-public class Compostela implements Serializable {
+/**
+ * Representa una compostela, es decir, un archivo que el peregrino debe portar
+ * y que debe ser sellado en todos los albergues por los que pasa en su camino
+ * para acreditar su estancia en ellos.
+ */
+public class Compostela {
+    private static final Logger _log = Logger.getLogger(Compostela.class.getName());
+    
     private PilgrimEncoded pilgrimEncoded;
     private final List<Stamp> stamps;
+    
+    private Pilgrim pilgrimDecoded = null;
     
     private Compostela() {
         this.stamps = new ArrayList<>();
@@ -40,7 +48,7 @@ public class Compostela implements Serializable {
     
     /**
      * Añade un sello (firma digital) de un albergue.
-     * @param s 
+     * @param s Claves del que firma el sello.
      * @throws es.uvigo.ssi.compostelas.exceptions.DecodeException 
      * @throws es.uvigo.ssi.compostelas.exceptions.EncodeException 
      */
