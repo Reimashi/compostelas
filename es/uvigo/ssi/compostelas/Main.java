@@ -2,11 +2,8 @@ package es.uvigo.ssi.compostelas;
 
 import es.uvigo.ssi.compostelas.exceptions.DecodeException;
 import es.uvigo.ssi.compostelas.exceptions.EncodeException;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.security.Security;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -194,14 +191,14 @@ public class Main {
 	System.out.println();
 	System.out.println("Commands:");
 	System.out.println();
-	System.out.println("genkey <name>\t\tGenerate a sealant file for an user with <name>.");
+	System.out.println("genkey <name>\n\n\tGenerate a sealant file for an user with <name>.\n");
 	System.out.println();
-	System.out.println("new <file> <office> <pilgrim>\tGenerate a compostela <file> signated by the <office> and <pilgrim>.");
+	System.out.println("new <file> <office> <pilgrim>\n\n\tGenerate a compostela <file> signated by the <office> and <pilgrim>.\n");
 	System.out.println();
-	System.out.println("stamp <file> <user>\tStamp a compostela <file> with the sign of the <user>.");
+	System.out.println("stamp <file> <user>\n\n\tStamp a compostela <file> with the sign of the <user>.\n");
 	System.out.println();
-	System.out.println("check <file>\t\tChech the sign's and show information about the pilgrim");
+	System.out.println("check <file>\n\n\tChech the sign's and show information about the pilgrim.\n");
 	System.out.println();
-	System.out.println("help\t\t\tShow this help");
+	System.out.println("help\n\n\tShow this help.");
     }
 }
