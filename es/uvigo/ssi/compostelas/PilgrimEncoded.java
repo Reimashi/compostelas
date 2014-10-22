@@ -20,10 +20,12 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 
 public class PilgrimEncoded {
-    private static final int KEY_SIZE = 192;
+    private static final int KEY_SIZE = 128;
     private static final byte[] IV_BYTES = new byte[] { 
                         0x00, 0x00, 0x00, 0x01, 0x04, 0x05, 0x06, 0x07,
                         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01 };
+    
+    private static final Logger _log = Logger.getLogger(PilgrimEncoded.class.getName());
     
     private final String signerName;
     private final byte[] pilgrimdata;
@@ -65,6 +67,7 @@ public class PilgrimEncoded {
             
         } catch (NoSuchAlgorithmException | NoSuchProviderException | NoSuchPaddingException | InvalidKeyException | 
                 InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException ex) {
+            PilgrimEncoded._log.log(Level.SEVERE, null, ex);
             throw new EncodeException("PilgrimEncoded can't calculate the sign. " + ex.getMessage());
         }
     }
