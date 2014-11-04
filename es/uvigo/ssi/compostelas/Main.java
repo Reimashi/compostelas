@@ -35,7 +35,7 @@ public class Main {
      * Punto de entrada del programa
      * @param args Argumentos de la ejecución
      */
-    public static void main(String[] args) {
+    public static void main(String ... args) {
         Security.addProvider(new BouncyCastleProvider());
         
         if (args.length > 0) {
@@ -161,14 +161,16 @@ public class Main {
         
         try {
             Compostela comp = Compostela.loadFromFile(filepath);
+            try {
+                Pilgrim p = comp.getPilgrim();
+                System.out.println("Pilgrim decoded correctly:\n" + p.toString());
+            } catch (DecodeException ex) {
+                System.out.println("<ERROR> Pilgrim info can't be decoded.");
+                Main._log.log(Level.SEVERE, null, ex);
+            }
+            
             if (comp.check()) {
                 System.out.println("Signs are correct. File integrity is OK!");
-                try {
-                    System.out.println(comp.getPilgrim().toString());
-                } catch (DecodeException ex) {
-                    System.out.println("<ERROR> Pilgrim info can't be decoded.");
-                    Main._log.log(Level.SEVERE, null, ex);
-                }
             }
             else {
                 System.out.println("<ERROR> Some sign appears to be incorrect. File integrity is BAD!");
