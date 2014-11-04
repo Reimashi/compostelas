@@ -125,7 +125,7 @@ public class Pilgrim {
         JSONObject jsonObj = new JSONObject();
         
         jsonObj.put("name", this.name);
-        jsonObj.put("nif", this.dni);
+        jsonObj.put("nif", this.dni.getNumber());
         jsonObj.put("address", this.address);
         jsonObj.put("motivations", this.motivations);
         jsonObj.put("creationtime", this.creationTime);
@@ -142,10 +142,10 @@ public class Pilgrim {
      */
     public static Pilgrim fromJSON(JSONObject json) throws ParseException {
         return new Pilgrim((String) json.get("name"), 
-                NIF.getNIF((String) json.get("name")), 
+                new NIF(((Long) json.get("nif")).intValue()), 
                 (String) json.get("address"), 
                 (String) json.get("motivations"), 
-                Long.getLong((String) json.get("creationtime")), 
+                (Long) json.get("creationtime"), 
                 (String) json.get("creationplace"));
     }
     
@@ -162,7 +162,7 @@ public class Pilgrim {
         lines.append("NIF: ").append(this.getNIF().toString()).append(System.lineSeparator());
         lines.append("Address: ").append(this.getAddress()).append(System.lineSeparator());
         lines.append("Motivations: ").append(this.getMotivations()).append(System.lineSeparator());
-        lines.append("==========================");
+        lines.append("==========================").append(System.lineSeparator());
         lines.append("Certification office: ").append(this.getCreationPlace()).append(System.lineSeparator());
         lines.append("Creation time: ").append(this.getCreationTime().toString()).append(System.lineSeparator());
         lines.append("==========================");
