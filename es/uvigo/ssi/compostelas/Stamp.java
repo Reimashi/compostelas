@@ -81,7 +81,7 @@ public class Stamp {
      * @param hash Datos a firmar
      * @return Firma digital
      */
-    protected byte[] calculateSign(Signer signer, byte[] hash) throws DecodeException, EncodeException {
+    private byte[] calculateSign(Signer signer, byte[] hash) throws DecodeException, EncodeException {
         try {
             Cipher cifrador = Cipher.getInstance("RSA", "BC");
             cifrador.init(Cipher.ENCRYPT_MODE, signer.getKey().getPrivate());

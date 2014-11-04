@@ -7,6 +7,9 @@ import java.util.Date;
 import java.util.Scanner;
 import org.json.simple.JSONObject;
 
+/**
+ * Sello digital de una compostela emitido por un hostal
+ */
 public class HostelStamp extends Stamp {
     private long creationTime;
     private String place;
@@ -19,6 +22,10 @@ public class HostelStamp extends Stamp {
         super(signer, pil);
     }
     
+    /**
+     * Obtine la fecha en la que fue emitida la compostela.
+     * @return 
+     */
     public Date getCreationTime() {
         return new Date(this.creationTime);
     }
@@ -27,6 +34,10 @@ public class HostelStamp extends Stamp {
         this.creationTime = timestamp;
     }
     
+    /**
+     * Obtiene el lugar en el que se firmó la compostela.
+     * @return 
+     */
     public String getCreationPlace() {
         return this.place;
     }
@@ -35,6 +46,14 @@ public class HostelStamp extends Stamp {
         this.place = place;
     }
     
+    /**
+     * Crea un HostelStamp obteniendo la información desde la consola.
+     * @param signer Información de cifrado del peregrino.
+     * @param pil Información codificada del peregrino.
+     * @return Sello emitido por un hostal.
+     * @throws DecodeException
+     * @throws EncodeException 
+     */
     public static HostelStamp fromCMD(Signer signer, PilgrimEncoded pil) throws DecodeException, EncodeException {
         HostelStamp s = new HostelStamp(signer, pil);
         
@@ -50,6 +69,10 @@ public class HostelStamp extends Stamp {
         return s;
     }
     
+    /**
+     * Serializa HotelStamp en un objeto JSON.
+     * @return Objeto HotelStamp serializado en JSON.
+     */
     @Override
     public JSONObject toJSON() {
         JSONObject st = super.toJSON();
@@ -60,6 +83,11 @@ public class HostelStamp extends Stamp {
         return st;
     }
     
+    /**
+     * Obtiene un objeto de tipo HotelStamp desde un objeto JSON.
+     * @param json Objeto HotelStamp serializado en JSON.
+     * @return Objeto HotelStamp des-serializado.
+     */
     public static HostelStamp fromJSON(JSONObject json) {
         HostelStamp hs = new HostelStamp((String) json.get("signer"), 
                 Base64.getDecoder().decode((String) json.get("sign")));
