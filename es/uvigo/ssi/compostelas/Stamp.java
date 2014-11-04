@@ -3,7 +3,6 @@ package es.uvigo.ssi.compostelas;
 import es.uvigo.ssi.compostelas.exceptions.DecodeException;
 import es.uvigo.ssi.compostelas.exceptions.EncodeException;
 import java.io.FileNotFoundException;
-import java.io.Serializable;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -14,18 +13,19 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import org.bouncycastle.util.Arrays;
 import org.json.simple.JSONObject;
 
 /**
  * Sello digital de una compostela
  */
-public class Stamp implements Serializable {
+public class Stamp {
     private static final Logger _log = Logger.getLogger(Stamp.class.getName());
     
-    private final String owner;
-    private final byte[] sign;
+    protected final String owner;
+    protected final byte[] sign;
     
-    private Stamp (String owner, byte[] sign) {
+    protected Stamp (String owner, byte[] sign) {
         this.owner = owner;
         this.sign = sign;
     }
@@ -45,7 +45,7 @@ public class Stamp implements Serializable {
     public boolean checkStamp(PilgrimEncoded pil) throws DecodeException, EncodeException {
         try {
             Signer stampsig = Signer.loadFromFile(this.owner);
-            return (this.sign == this.calculateSign(stampsig, pil.getSign()));
+            return Arrays.areEqual(this.sign, this.calculateSign(stampsig, pil.getSign()));
         } catch (FileNotFoundException ex) {
             Stamp._log.log(Level.SEVERE, null, ex);
             throw new DecodeException("Error while open signer key file to chech a Stamp. " + ex.getMessage());
@@ -81,7 +81,7 @@ public class Stamp implements Serializable {
      * @param hash Datos a firmar
      * @return Firma digital
      */
-    private byte[] calculateSign(Signer signer, byte[] hash) throws DecodeException, EncodeException {
+    protected byte[] calculateSign(Signer signer, byte[] hash) throws DecodeException, EncodeException {
         try {
             Cipher cifrador = Cipher.getInstance("RSA", "BC");
             cifrador.init(Cipher.ENCRYPT_MODE, signer.getKey().getPrivate());
