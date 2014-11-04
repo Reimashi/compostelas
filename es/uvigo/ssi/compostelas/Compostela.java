@@ -25,7 +25,7 @@ public class Compostela {
     private static final Logger _log = Logger.getLogger(Compostela.class.getName());
     
     private PilgrimEncoded pilgrimEncoded;
-    private final List<Stamp> stamps;
+    private final List<HostelStamp> stamps;
     
     private Pilgrim pilgrimDecoded = null;
     
@@ -53,7 +53,7 @@ public class Compostela {
      * @throws es.uvigo.ssi.compostelas.exceptions.EncodeException 
      */
     public void AddStamp (Signer s) throws DecodeException, EncodeException {
-        this.stamps.add(new Stamp(s, this.pilgrimEncoded));
+        this.stamps.add(HostelStamp.fromCMD(s, this.pilgrimEncoded));
     }
     
     /**
@@ -79,7 +79,7 @@ public class Compostela {
      * Obtiene una lista de sellos (firma digital) de albergues.
      * @return Lista de sellos digitales.
      */
-    public List<Stamp> getStamps() {
+    public List<HostelStamp> getStamps() {
         return this.stamps;
     }
     
@@ -92,7 +92,7 @@ public class Compostela {
         try {
             this.getPilgrim();
             
-            for (Stamp s: this.stamps) {
+            for (HostelStamp s: this.stamps) {
                 if (!s.checkStamp(this.pilgrimEncoded)) {
                     return false;
                 }
@@ -119,7 +119,7 @@ public class Compostela {
         
         JSONArray jsonStamps = new JSONArray();
         
-        for (Iterator<Stamp> it = this.stamps.iterator(); it.hasNext();) {
+        for (Iterator<HostelStamp> it = this.stamps.iterator(); it.hasNext();) {
             jsonStamps.add(it.next().toJSON());
         }
         
@@ -156,7 +156,7 @@ public class Compostela {
 
             Iterator i = stamps.iterator();
             while (i.hasNext()) {
-                toret.stamps.add(Stamp.fromJSON((JSONObject) i.next()));
+                toret.stamps.add(HostelStamp.fromJSON((JSONObject) i.next()));
             }
         } 
         catch (FileNotFoundException ex) {
